@@ -1,6 +1,6 @@
 # gym-solitaire
 
-*Work in progress* 
+**Work in progress** 
 
 ## Peg solitaire
 
