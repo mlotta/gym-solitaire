@@ -52,11 +52,9 @@ class SolitaireEnv(gym.Env):
 
   def step(self, action):
     assert self.action_space.contains(action)
-    state = self.state
     # check if the action is possible
     first_hole = _ind_to_rowcol[str(action[0])]
     self.round += 1
-    reward = 10
 
 
     try:
@@ -65,29 +63,26 @@ class SolitaireEnv(gym.Env):
     except KeyError:
       reward = -1
     else:
-      if state[action[0]] == 1 and state[inter_hole] == 1 and state[dest_hole] == 0:
-        state[action[0]] = 0
-        state[inter_hole] = 0
-        state[dest_hole] = 1
+      if self.state[action[0]] == 1 and self.state[inter_hole] == 1 and self.state[dest_hole] == 0:
+        self.state[action[0]] = 0
+        self.state[inter_hole] = 0
+        self.state[dest_hole] = 1
+        reward = np.exp(len(self.state)/2-sum(self.state))
       else:
         reward = -1
 
 
-    observation = state
+    observation = np.reshape(self.state.copy(), [1, self.hole_number])
     done = False
-    if sum(state) == 1:
+    if sum(self.state) == 1 or self.round > 499:
       done = True
-      reward = 200 - self.round
-    elif self.round > 999:
-      done = True
-      reward = -sum(state)
 
 
     return observation, reward, done, {}
 
   def reset(self):
     self.round = 0
-    self.state = [1 for _ in range(self.hole_number)]
+    self.state = np.array([1 for _ in range(self.hole_number)])
     #self.state = [1 for _ in range(21)]
     self.state[self.center_index] = 0
     return np.array(self.state)
