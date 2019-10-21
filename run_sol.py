@@ -78,14 +78,14 @@ def solitaire():
 			#action = (int(input("Entrez case :")), int(input("up right bottom left : ")))
 			#action = (random.randrange(0, 33), random.randrange(0, 2))
 			action = dqn_solver.act(state)
-			#print(action)
+			
 			state_next, reward, done, info = env.step(action)
 			dqn_solver.remember(state, action, reward, state_next, done)
 			state = state_next
-			if done:
-				print("Run: " + str(run) + ", exploration" + str(dqn_solver.exploration_rate) + ",score: " + str(step))
-				break
 			dqn_solver.experience_replay()
+			if done:
+				print("Run: " + str(run) + ", exploration: " + str(dqn_solver.exploration_rate))
+				break
 	env.close()
 
 if __name__ == '__main__':
